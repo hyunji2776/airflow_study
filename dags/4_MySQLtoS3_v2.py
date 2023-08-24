@@ -1,4 +1,5 @@
 # aws 테이블 확인
+# 멱등성을 고려한 쿼리 작성
 from datetime import datetime, timedelta
 from email.policy import default
 from textwrap import dedent
@@ -25,6 +26,7 @@ dag = DAG(
     tags=['MySQLtoS3'],
 )
 
+# 멱등성을 고려한 쿼리 작성
 # Define the task
 mysql_to_s3_task = SqlToS3Operator(
     task_id='mysql_to_s3_employee_task',
@@ -32,14 +34,15 @@ mysql_to_s3_task = SqlToS3Operator(
     sql_conn_id='AWS_RDB',  # Replace with your MySQL connection ID
     aws_conn_id='AWS_S3',        # Replace with your AWS connection ID
     s3_bucket='woori-fisa',           # Replace with your S3 bucket name
-    s3_key='yeonji/employee_test.csv',
-    replace=True,
+    s3_key='yeonji/qna_test.csv',
+    
     dag=dag,
 )
 
 # s3_bucket: 데이터가 저장될 장소
 # s3_key: 이름. 스키마의 table 명과 비슷한 개념
-# sql_conn_id, aws_conn_id: sql, aws(s3) connection.
+# sql_conn_id, aws_conn_id: sql, aws(s3) connection. Connection 파트 참조.
+# verify: S3에 대한 SSL 증명 확인
 # replace: S3 내부에 파일이 있다면 대체할 지에 대한 설정. sql의 if exist와 비슷한 맥락
 # pd_kwargs: dataframe에 대한 설정값
 

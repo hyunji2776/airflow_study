@@ -14,7 +14,7 @@ def print_goodbye():
 
 with DAG(
     dag_id = 'HelloWorld_v2',
-    start_date = datetime(2022,5,5),
+    start_date = datetime(2023,8,15),
     catchup=False,
     tags=['example'],
     schedule = '0 2 * * *'
