@@ -10,7 +10,7 @@ def print_hello():
 @task
 def print_goodbye():
     print("goodbye!")
-    return "goodbye!"
+    return "govodbye!"
 
 with DAG(
     dag_id = 'HelloWorld_v2',

@@ -27,6 +27,6 @@ with DAG(
         op_kwargs = {
             'filename' : '/opt/airflow/dags/0_HelloWorld.py', # 현재 내 Airflow는 Docker 위에서 동작하므로 파일은 Airflow가 동작하는 Container의 파일시스템에 기준으로 작성합니다.
             'key' : 'yeonji/from_airflow.py',
-            'bucket_name' : 'woori-fisa-bucket'
+            'bucket_name' : 'woori-fisa'
         }
     )
