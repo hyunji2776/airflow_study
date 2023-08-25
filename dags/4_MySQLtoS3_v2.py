@@ -1,5 +1,5 @@
 # aws 테이블 확인
-# 멱등성을 고려한 쿼리 작성
+# qna 게시판에 있는 글을 가져오기
 from datetime import datetime, timedelta
 from email.policy import default
 from textwrap import dedent
@@ -14,7 +14,7 @@ from airflow.providers.amazon.aws.transfers.sql_to_s3 import SqlToS3Operator
 
 # Define the DAG
 dag = DAG(
-    'mysql_to_s3_employee',
+    'mysql_to_s3_v2',
     default_args={
         'owner': 'woori-fisa',
         'start_date': datetime(2023, 8, 24),
@@ -23,14 +23,25 @@ dag = DAG(
     },
     schedule_interval=timedelta(minutes=5),  # Run every 5 minutes
     catchup=False,  # Do not backfill if the DAG is paused and resumed
-    tags=['MySQLtoS3'],
+    tags=['MySQLtoS3_v2'],
 )
 
 # 멱등성을 고려한 쿼리 작성
 # Define the task
 mysql_to_s3_task = SqlToS3Operator(
-    task_id='mysql_to_s3_employee_task',
-    query='SELECT * FROM employees',
+    task_id='mysql_to_s3_qna_task',
+    query="""SELECT
+                        q.id AS question_id,
+                        q.subject AS question_subject,
+                        q.content AS question_content,
+                        q.create_date AS question_create_date,
+                        u.id AS user_id,
+                        u.username AS user_username
+                    FROM
+                        question q
+                    JOIN
+                        user u ON q.user_id = u.id ORDER BY q.create_date ASC;
+            """, 
     sql_conn_id='AWS_RDB',  # Replace with your MySQL connection ID
     aws_conn_id='AWS_S3',        # Replace with your AWS connection ID
     s3_bucket='woori-fisa',           # Replace with your S3 bucket name
